@@ -299,6 +299,7 @@ type TransactionListItemMapped = TransactionListItem & {
   statusColor: "danger" | "dark-success";
 };
 
+// @todo: support for bitcoin verify
 const transactions = computed<TransactionListItemMapped[] | undefined>(() => {
   return data.value?.map((transaction) => ({
     ...transaction,
