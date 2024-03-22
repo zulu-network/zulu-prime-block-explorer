@@ -83,6 +83,16 @@ export class BlockchainService implements OnModuleInit {
     }, "getL1BatchDetails");
   }
 
+  // public async getL1BatchDetails(batchNumber: number): Promise<types.BatchDetails> {
+  //   return await this.rpcCall(async () => {
+  //     const batchDetails = await this.provider.getL1BatchDetails(batchNumber);
+  //     if (batchDetails && batchNumber === 0) {
+  //       batchDetails.committedAt = batchDetails.provenAt = batchDetails.executedAt = new Date(0);
+  //     }
+  //     return batchDetails;
+  //   }, "getL1BatchDetails");
+  // }
+
   public async getBlock(blockHashOrBlockTag: types.BlockTag): Promise<types.Block> {
     return await this.rpcCall(async () => {
       return await this.provider.getBlock(blockHashOrBlockTag);
