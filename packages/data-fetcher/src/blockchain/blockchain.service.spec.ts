@@ -455,6 +455,179 @@ describe("BlockchainService", () => {
     });
   });
 
+  describe("getL1BatchDetailsWithOffchainVerification", () => {
+    const batchNumber = 10;
+    const batchDetails: types.BatchDetailsWithOffchainVerification = mock<types.BatchDetailsWithOffchainVerification>({
+      number: 10,
+    });
+    let timeoutSpy;
+
+    beforeEach(() => {
+      jest.spyOn(provider, "getL1BatchDetailsWithOffchainVerification").mockResolvedValue(batchDetails);
+      timeoutSpy = jest.spyOn(timersPromises, "setTimeout");
+    });
+
+    it("starts the rpc call duration metric", async () => {
+      await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+      expect(startRpcCallDurationMetricMock).toHaveBeenCalledTimes(1);
+    });
+
+    it("gets batch details by the specified batch number", async () => {
+      await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+      expect(provider.getL1BatchDetailsWithOffchainVerification).toHaveBeenCalledTimes(1);
+      expect(provider.getL1BatchDetailsWithOffchainVerification).toHaveBeenCalledWith(batchNumber);
+    });
+
+    it("stops the rpc call duration metric", async () => {
+      await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+      expect(stopRpcCallDurationMetricMock).toHaveBeenCalledTimes(1);
+      expect(stopRpcCallDurationMetricMock).toHaveBeenCalledWith({
+        function: "getL1BatchDetailsWithOffchainVerification",
+      });
+    });
+
+    it("returns the batch details", async () => {
+      const result = await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+      expect(result).toEqual(batchDetails);
+    });
+
+    it("sets default committedAt, provenAt and executedAt for the very first batch", async () => {
+      jest
+        .spyOn(provider, "getL1BatchDetailsWithOffchainVerification")
+        .mockResolvedValueOnce({ number: 0 } as types.BatchDetails);
+      const result = await blockchainService.getL1BatchDetailsWithOffchainVerification(0);
+      expect(result).toEqual({
+        number: 0,
+        committedAt: new Date(0),
+        provenAt: new Date(0),
+        executedAt: new Date(0),
+      });
+    });
+
+    describe("if the call throws an error", () => {
+      const error = new Error("RPC call error");
+      beforeEach(() => {
+        jest
+          .spyOn(provider, "getL1BatchDetailsWithOffchainVerification")
+          .mockRejectedValueOnce(error)
+          .mockRejectedValueOnce(error)
+          .mockResolvedValueOnce(batchDetails);
+      });
+
+      it("retries RPC call with a default timeout", async () => {
+        await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+        expect(provider.getL1BatchDetailsWithOffchainVerification).toHaveBeenCalledTimes(3);
+        expect(timeoutSpy).toHaveBeenCalledTimes(2);
+        expect(timeoutSpy).toHaveBeenNthCalledWith(1, defaultRetryTimeout);
+        expect(timeoutSpy).toHaveBeenNthCalledWith(2, defaultRetryTimeout);
+      });
+
+      it("stops the rpc call duration metric only for the successful retry", async () => {
+        await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+        expect(stopRpcCallDurationMetricMock).toHaveBeenCalledTimes(1);
+        expect(stopRpcCallDurationMetricMock).toHaveBeenCalledWith({
+          function: "getL1BatchDetailsWithOffchainVerification",
+        });
+      });
+
+      it("returns result of the successful RPC call", async () => {
+        const result = await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+        expect(result).toEqual(batchDetails);
+      });
+
+      describe("and retries max total timeout is exceeded", () => {
+        beforeEach(() => {
+          (configServiceMock.get as jest.Mock).mockClear();
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(10);
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(20);
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(1);
+
+          blockchainService = new BlockchainService(configServiceMock, provider, app.get(metricProviderKey));
+        });
+
+        it("stops retrying and throws the error", async () => {
+          await expect(blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber)).rejects.toThrowError(
+            error
+          );
+        });
+      });
+    });
+
+    describe("if the call throws a timeout error", () => {
+      const error = new Error();
+      (error as any).code = "TIMEOUT";
+
+      beforeEach(() => {
+        jest
+          .spyOn(provider, "getL1BatchDetailsWithOffchainVerification")
+          .mockRejectedValueOnce(error)
+          .mockRejectedValueOnce(error)
+          .mockResolvedValueOnce(batchDetails);
+      });
+
+      it("retries RPC call with a quick timeout", async () => {
+        await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+        expect(timeoutSpy).toHaveBeenCalledTimes(2);
+        expect(timeoutSpy).toHaveBeenNthCalledWith(1, quickRetryTimeout);
+        expect(timeoutSpy).toHaveBeenNthCalledWith(2, quickRetryTimeout);
+      });
+
+      describe("and retries max total timeout is exceeded", () => {
+        beforeEach(() => {
+          (configServiceMock.get as jest.Mock).mockClear();
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(10);
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(20);
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(1);
+
+          blockchainService = new BlockchainService(configServiceMock, provider, app.get(metricProviderKey));
+        });
+
+        it("stops retrying and throws the error", async () => {
+          await expect(blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber)).rejects.toThrowError(
+            error
+          );
+        });
+      });
+    });
+
+    describe("if the call throws a connection refused error", () => {
+      const error = new Error();
+      (error as any).code = "ECONNREFUSED";
+
+      beforeEach(() => {
+        jest
+          .spyOn(provider, "getL1BatchDetailsWithOffchainVerification")
+          .mockRejectedValueOnce(error)
+          .mockRejectedValueOnce(error)
+          .mockResolvedValueOnce(batchDetails);
+      });
+
+      it("retries RPC call with a quick timeout", async () => {
+        await blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber);
+        expect(timeoutSpy).toHaveBeenCalledTimes(2);
+        expect(timeoutSpy).toHaveBeenNthCalledWith(1, quickRetryTimeout);
+        expect(timeoutSpy).toHaveBeenNthCalledWith(2, quickRetryTimeout);
+      });
+
+      describe("and retries max total timeout is exceeded", () => {
+        beforeEach(() => {
+          (configServiceMock.get as jest.Mock).mockClear();
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(10);
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(20);
+          (configServiceMock.get as jest.Mock).mockReturnValueOnce(1);
+
+          blockchainService = new BlockchainService(configServiceMock, provider, app.get(metricProviderKey));
+        });
+
+        it("stops retrying and throws the error", async () => {
+          await expect(blockchainService.getL1BatchDetailsWithOffchainVerification(batchNumber)).rejects.toThrowError(
+            error
+          );
+        });
+      });
+    });
+  });
+
   describe("getBlock", () => {
     const blockNumber = 10;
     const block: types.Block = mock<types.Block>({ number: 10 });

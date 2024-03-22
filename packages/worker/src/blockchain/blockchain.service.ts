@@ -74,6 +74,15 @@ export class BlockchainService implements OnModuleInit {
       return batchDetails;
     }, "getL1BatchDetails");
   }
+  public async getL1BatchDetailsWithOffchainVerification(batchNumber: number): Promise<types.BatchDetails> {
+    return await this.rpcCall(async () => {
+      const batchDetails = await this.provider.getL1BatchDetailsWithOffchainVerification(batchNumber);
+      if (batchDetails && batchNumber === 0) {
+        batchDetails.committedAt = batchDetails.provenAt = batchDetails.executedAt = new Date(0);
+      }
+      return batchDetails;
+    }, "getL1BatchDetailsWithOffchainVerification");
+  }
 
   public async getBlock(blockHashOrBlockTag: types.BlockTag): Promise<types.Block> {
     return await this.rpcCall(async () => {
