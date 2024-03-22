@@ -3,7 +3,7 @@ ENV NODE_ENV=production
 
 WORKDIR /usr/src/app
 
-RUN apk add --update python3 make g++ && rm -rf /var/cache/apk/*
+RUN apk add --update python3 make g++ git && rm -rf /var/cache/apk/*
 
 COPY --chown=node:node .npmrc .npmrc
 COPY --chown=node:node lerna.json ./
