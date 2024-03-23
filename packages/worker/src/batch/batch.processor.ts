@@ -1,6 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { IsNull, Not } from "typeorm";
-import { getBatchState } from "./batch.utils";
+import { getBatchState, getBatchWithOfflineVerificationState } from "./batch.utils";
 import { unixTimeToDate } from "../utils/date";
 import { BlockchainService } from "../blockchain/blockchain.service";
 import { BatchRepository, BlockRepository } from "../repositories";
@@ -49,14 +49,14 @@ export class BatchProcessor {
         batchNumber: nextBatchNumber,
         currentBatchState: this.state,
       });
-      const nextBatch = await this.blockchainService.getL1BatchDetails(nextBatchNumber);
+      const nextBatch = await this.blockchainService.getL1BatchDetailsWithOffchainVerification(nextBatchNumber);
       if (!nextBatch) {
         this.logger.debug({ message: "No batch found yet", batchNumber: nextBatchNumber });
         this.lastProcessedBatchNumber = null;
         return false;
       }
 
-      const nextBatchState = getBatchState(nextBatch);
+      const nextBatchState = getBatchWithOfflineVerificationState(nextBatch);
       if (nextBatchState !== this.state) {
         this.logger.debug({
           message: "Next batch state is different to the current batch state",

@@ -7,9 +7,10 @@ import { BaseEntity } from "./base.entity";
 
 export enum BatchState {
   New = 0,
-  Committed = 1,
-  Proven = 2,
-  Executed = 3,
+  Committed = 1, // calldata/blockdiff -> L1
+  Proven = 2, // generated proof
+  Executed = 3, //  verified on L1
+  VerifiedOffline = 4,
 }
 
 @Entity({ name: "batches" })
