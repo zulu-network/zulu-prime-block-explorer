@@ -37,7 +37,7 @@
     "rimraf": "^3.0.2",
     "rxjs": "^7.2.0",
     "winston": "^3.8.2",
-    "zksync-web3": "git+https://github.com/zulu-network/zksync2-js.git#feat/add_phone_verified_status_2"
+    "zksync-web3": "github:zulu-network/zksync2-js#feat/add_phone_verified_status_2"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
