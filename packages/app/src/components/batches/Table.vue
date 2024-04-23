@@ -21,7 +21,7 @@
               <div class="inline-flex h-5 items-center">
                 {{ te(`batches.status.${item.status}`) ? t(`batches.status.${item.status}`) : item.status }}
               </div>
-              <component :is="getBadgeIconByStatus(item.status)" />
+              <component :is="getBadgeIconByStatus(item.status)" class="w-4" />
             </template>
           </Badge>
         </div>
@@ -61,7 +61,6 @@ import Table from "@/components/common/table/Table.vue";
 import TableBodyColumn from "@/components/common/table/TableBodyColumn.vue";
 import TableHeadColumn from "@/components/common/table/TableHeadColumn.vue";
 import TimeField from "@/components/common/table/fields/TimeField.vue";
-import EthereumIcon from "@/components/icons/Ethereum.vue";
 import ZuluIcon from "@/components/icons/Zulu.vue";
 
 import type { BatchListItem } from "@/composables/useBatches";
