@@ -61,7 +61,7 @@ import Table from "@/components/common/table/Table.vue";
 import TableBodyColumn from "@/components/common/table/TableBodyColumn.vue";
 import TableHeadColumn from "@/components/common/table/TableHeadColumn.vue";
 import TimeField from "@/components/common/table/fields/TimeField.vue";
-import ZuluIcon from "@/components/icons/Zulu.vue";
+import ZuluCircleIcon from "@/components/icons/ZuluCircle.vue";
 
 import type { BatchListItem } from "@/composables/useBatches";
 import type { PropType } from "vue";
@@ -91,7 +91,7 @@ defineProps({
 
 function getBadgeIconByStatus(status: BatchListItem["status"]) {
   if (status === "sealed") {
-    return ZuluIcon;
+    return ZuluCircleIcon;
   }
   return "span";
 }
