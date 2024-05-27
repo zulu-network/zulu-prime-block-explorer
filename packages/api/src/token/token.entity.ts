@@ -12,8 +12,8 @@ export enum TokenType {
 export const ETH_TOKEN: Token = {
   l2Address: "0x000000000000000000000000000000000000800A",
   l1Address: "0x0000000000000000000000000000000000000000",
-  symbol: "ZULU",
-  name: "ZULU",
+  symbol: "BTC",
+  name: "BTC",
   decimals: 18,
   // Fallback data in case ETH token is not in the DB
   // iconURL: "https://assets.coingecko.com/coins/images/279/large/ethereum.png?1698873266",
