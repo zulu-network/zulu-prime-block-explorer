@@ -2,9 +2,7 @@
 services:
   api:
     container_name: "block-explorer-alpha-api"
-    build:
-      context: .
-      dockerfile: ./packages/api/Dockerfile
+    image: zulunetwork/zulu-prime-block-explorer-api:latest
     environment:
       - PORT=3020
       - METRICS_PORT=3007
