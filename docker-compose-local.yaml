@@ -79,6 +79,5 @@ services:
     command: -p 5433
 
 volumes:
-  geth:
   postgres:
 

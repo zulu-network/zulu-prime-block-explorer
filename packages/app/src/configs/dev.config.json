@@ -2,7 +2,7 @@
   "networks": [
     {
       "apiUrl": "https://api-testnet.zuluscan.io",
-      "verificationApiUrl": "https://contract-verification-testnet.zulunetwork.xyz",
+      "verificationApiUrl": "https://contract-verification-testnet.zulunetwork.io",
       "bridgeUrl": "https://bridge-testnet.zulunetwork.io",
       "hostnames": [],
       "icon": "/images/icons/zulu-logo.svg",
