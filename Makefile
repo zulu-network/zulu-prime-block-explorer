@@ -13,6 +13,10 @@ start: ## run explorer with external db
 	@docker compose -f docker-compose.yaml up -d
 
 
+start_alpha_api: ## run explorer with local db
+	@docker compose -f docker-compose-local-alpha.yaml up -d
+
+
 clear: ## clear docker
 	docker compose down --volumes
 	docker compose pull

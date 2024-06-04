@@ -13,6 +13,20 @@
       "name": "testnet-beta",
       "published": true,
       "rpcUrl": "https://rpc-testnet.zulunetwork.io"
+    },
+    {
+      "apiUrl": "https://api-testnet-alpha.zuluscan.io",
+      "verificationApiUrl": "https://contract-verification-testnet.zulunetwork.io",
+      "bridgeUrl": "https://bridge-testnet.zulunetwork.io",
+      "hostnames": [],
+      "icon": "/images/icons/zulu-logo.svg",
+      "l1ExplorerUrl": "",
+      "l2ChainId": 202401,
+      "l2NetworkName": "Testnet-Alpha",
+      "maintenance": false,
+      "name": "testnet-alpha",
+      "published": true,
+      "rpcUrl": "https://rpc-testnet.zulunetwork.io"
     }
   ]
 }

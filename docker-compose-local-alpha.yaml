@@ -1,0 +1,40 @@
+# Run the explorer with db
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./packages/api/Dockerfile
+    environment:
+      - PORT=3020
+      - METRICS_PORT=3007
+      - LOG_LEVEL=verbose
+      - DATABASE_URL=postgres://postgres:postgres@postgres:5434/block-explorer
+    ports:
+      - '3022:3022'
+      - '3007:3007'
+    restart: unless-stopped
+
+  postgres:
+    image: "postgres:14"
+    logging:
+      driver: none
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=block-explorer-alpha
+    expose:
+      - "5434" # Publishes 5434 to other containers but NOT to host machine
+    ports:
+      - "5434:5434"
+    command: -p 5434
+
+volumes:
+  postgres:
+
