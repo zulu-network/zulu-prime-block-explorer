@@ -1,6 +1,7 @@
 # Run the explorer with db
 services:
   api:
+    container_name: "block-explorer-alpha-api"
     build:
       context: .
       dockerfile: ./packages/api/Dockerfile
@@ -15,6 +16,7 @@ services:
     restart: unless-stopped
 
   postgres:
+    container_name: "block-explorer-alpha-api-postgres"
     image: "postgres:14"
     logging:
       driver: none
