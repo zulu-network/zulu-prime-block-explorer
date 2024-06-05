@@ -14,7 +14,7 @@ services:
     restart: unless-stopped
   alpha-postgres:
     container_name: "block-explorer-alpha-api-postgres"
-    image: "postgres:14"
+    image: "postgres:16"
     logging:
       driver: none
     volumes:

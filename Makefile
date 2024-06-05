@@ -8,7 +8,7 @@ login_db: ## if need use pswd: notsecurepassword
 
 
 login_alpha_db: ## if need use pswd: notsecurepassword
-	@psql -h localhost -U postgres -p 5434
+	@psql -h localhost -U postgres -p 5434 -d block-explorer
 
 start_local: ## run explorer with local db
 	@docker compose -f docker-compose-local.yaml up -d
