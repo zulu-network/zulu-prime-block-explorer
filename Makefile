@@ -6,6 +6,10 @@ help: ## Display this help screen
 login_db: ## if need use pswd: notsecurepassword
 	@psql -h localhost -U postgres -p 5433
 
+
+login_alpha_db: ## if need use pswd: notsecurepassword
+	@psql -h localhost -U postgres -p 54343
+
 start_local: ## run explorer with local db
 	@docker compose -f docker-compose-local.yaml up -d
 
