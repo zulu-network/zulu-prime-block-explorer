@@ -1,10 +1,10 @@
 # Run the explorer with db
 services:
-  api:
+  alpha-api:
     container_name: "block-explorer-alpha-api"
     image: zulunetwork/zulu-prime-block-explorer-api:latest
     environment:
-      - PORT=3020
+      - PORT=3022
       - METRICS_PORT=3007
       - LOG_LEVEL=verbose
       - DATABASE_URL=postgres://postgres:postgres@postgres:5434/block-explorer
@@ -12,8 +12,7 @@ services:
       - '3022:3022'
       - '3007:3007'
     restart: unless-stopped
-
-  postgres:
+  alpha-postgres:
     container_name: "block-explorer-alpha-api-postgres"
     image: "postgres:14"
     logging:
