@@ -7,7 +7,7 @@ services:
       - PORT=3022
       - METRICS_PORT=3007
       - LOG_LEVEL=verbose
-      - DATABASE_URL=postgres://postgres:postgres@postgres:5434/block-explorer-alpha
+      - DATABASE_URL=postgres://postgres:postgres@localhost:5434/block-explorer-alpha
     ports:
       - '3022:3022'
       - '3007:3007'
