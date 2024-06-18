@@ -10,6 +10,11 @@ services:
     depends_on:
       - api
     restart: unless-stopped
+    logging:
+      driver: "json-file"
+      options:
+        max-file: "5"    # number of files or file count
+        max-size: "1g"  # file size
 
   worker:
     build:
